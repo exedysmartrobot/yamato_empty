@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /home/exedy24-5095/TENANT/yamato/app/yamato_0714 -iname \"call_ros*\"; echo \"---shutdown in cainz---\"; grep -rn \"shutdown_ros_api\" /home/exedy24-5095/TENANT/cainz/test_爆速/app_manager_0605_ros_v3/cainz_nav_patrol/ 2>/dev/null)",
+      "Read(//home/exedy24-5095/TENANT/cainz/test_爆速/app_manager_0605_ros_v3/cainz_nav_patrol/**)",
+      "Bash(node --check /home/exedy24-5095/TENANT/yamato/app/yamato_sub_v2/static/js/script.js)"
+    ]
+  }
+}

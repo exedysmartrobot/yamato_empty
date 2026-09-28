@@ -1,0 +1,585 @@
+:root {
+    --bg: #f2f5f8;
+    --card: #ffffff;
+    --ink: #2b3742;
+    --muted: #8593a0;
+    --line: #e9edf1;
+    --go: #3e8e75;
+    --go-soft: #e9f3f0;
+    --amber: #d99b3e;
+    --amber-soft: #fbf1e2;
+    --coral: #d9695e;
+    --coral-soft: #fbedec;
+    --r: 24px;
+}
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+html,
+body {
+    height: 100%;
+}
+body {
+    font-family: "Zen Kaku Gothic New", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    padding: 18px;
+}
+.app {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* ヘッダ */
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex: none;
+}
+.status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--muted);
+}
+#lamp {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--muted);
+    transition: 0.3s;
+}
+#lamp.ok {
+    background: var(--go);
+}
+#lamp.busy {
+    background: var(--amber);
+    animation: breathe 1.6s infinite;
+}
+#lamp.error {
+    background: var(--coral);
+}
+@keyframes breathe {
+    50% {
+        opacity: 0.3;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    #lamp.busy {
+        animation: none;
+    }
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.langs {
+    display: flex;
+    gap: 4px;
+    background: var(--card);
+    padding: 4px;
+    border-radius: 999px;
+}
+.langs button {
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+    background: none;
+    border: 0;
+    border-radius: 999px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.langs button.active {
+    background: var(--ink);
+    color: #fff;
+}
+#fullscreen-button {
+    background: var(--card);
+    border: 0;
+    border-radius: 999px;
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    color: var(--muted);
+    flex: none;
+}
+#fullscreen-button svg {
+    width: 20px;
+    height: 20px;
+    stroke-width: 2;
+}
+
+/* 工程バー */
+.steps {
+    display: flex;
+    gap: 6px;
+    flex: none;
+}
+.step {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    color: var(--muted);
+    padding: 12px 4px;
+    border-radius: 16px;
+    transition: 0.3s;
+}
+.step svg {
+    width: 28px;
+    height: 28px;
+    stroke-width: 2;
+}
+.step span {
+    font-size: 14px;
+    font-weight: 700;
+}
+.step.done {
+    color: var(--go);
+    background: var(--go-soft);
+}
+.step.current {
+    color: #fff;
+    background: var(--ink);
+}
+
+/* 画面切り替え：.screen は既定で非表示、.active だけ表示 */
+.content {
+    flex: 1;
+    min-height: 0;
+    background: var(--card);
+    border-radius: var(--r);
+    box-shadow: 0 2px 20px rgba(43, 55, 66, 0.05);
+    position: relative;
+    overflow: hidden;
+}
+.screen {
+    display: none;
+    position: absolute;
+    inset: 0;
+    padding: 28px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+.screen.active {
+    display: flex;
+}
+
+/* 画面の部品 */
+.pictogram {
+    width: clamp(88px, 10vh, 130px);
+    height: clamp(88px, 10vh, 130px);
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--go-soft);
+    color: var(--go);
+    position: relative;
+    margin-bottom: clamp(12px, 2.2vh, 26px);
+}
+.pictogram svg {
+    width: 50%;
+    height: 50%;
+    stroke-width: 1.9;
+}
+.pictogram.busy {
+    background: var(--amber-soft);
+    color: var(--amber);
+}
+.pictogram.error {
+    background: var(--coral-soft);
+    color: var(--coral);
+}
+.pictogram.pulse::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    opacity: 0;
+    animation: pulse 2s ease-out infinite;
+}
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+    100% {
+        transform: scale(1.45);
+        opacity: 0;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .pictogram.pulse::after {
+        animation: none;
+    }
+}
+
+.caption {
+    font-size: clamp(15px, 2.2vh, 22px);
+    font-weight: 700;
+    color: var(--muted);
+}
+.caption.inline {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--amber);
+}
+.caption.inline svg {
+    width: 1.5em;
+    height: 1.5em;
+    stroke-width: 2;
+}
+
+/* 行き先番号：画面で一番大きい要素 */
+.number {
+    font-size: clamp(120px, 42vh, 460px);
+    font-weight: 900;
+    line-height: 0.9;
+    margin: 2px 0;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+}
+.number.small {
+    font-size: clamp(90px, 26vh, 280px);
+}
+
+.message {
+    font-size: clamp(28px, 5vh, 56px);
+    font-weight: 900;
+    line-height: 1.25;
+}
+.message.small {
+    font-size: clamp(20px, 3.4vh, 34px);
+}
+.waypoint {
+    font-size: clamp(13px, 1.7vh, 17px);
+    font-weight: 700;
+    color: var(--go);
+    background: var(--go-soft);
+    border-radius: 999px;
+    padding: 8px 18px;
+    margin-top: clamp(10px, 1.6vh, 18px);
+}
+.hint {
+    margin-top: clamp(10px, 1.8vh, 22px);
+    font-size: clamp(14px, 1.8vh, 19px);
+    color: var(--muted);
+    font-weight: 500;
+}
+.raw {
+    margin-top: clamp(10px, 1.6vh, 18px);
+    font-size: clamp(13px, 1.7vh, 17px);
+    color: var(--muted);
+    font-weight: 500;
+}
+.raw span {
+    background: var(--amber-soft);
+    color: var(--ink);
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 6px;
+}
+.eta {
+    margin-top: clamp(10px, 1.8vh, 22px);
+    font-size: clamp(34px, 5.5vh, 64px);
+    font-weight: 900;
+    font-variant-numeric: tabular-nums;
+}
+.progress {
+    width: min(480px, 100%);
+    height: 12px;
+    border-radius: 99px;
+    background: var(--bg);
+    margin-top: clamp(12px, 2vh, 24px);
+    overflow: hidden;
+}
+.progress > i {
+    display: block;
+    height: 100%;
+    border-radius: 99px;
+    background: var(--go);
+    transition: width 1s ease;
+}
+
+/* テンキー */
+#keypad-display {
+    font-size: clamp(44px, 8vh, 84px);
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    min-height: 1.1em;
+    font-variant-numeric: tabular-nums;
+    margin-bottom: clamp(10px, 2vh, 20px);
+}
+#keypad-display.empty {
+    color: var(--line);
+}
+.keypad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    width: min(340px, 100%);
+}
+.keypad button {
+    font-family: inherit;
+    font-size: clamp(22px, 3.4vh, 30px);
+    font-weight: 900;
+    padding: clamp(12px, 2.2vh, 20px) 0;
+    border: 0;
+    border-radius: 16px;
+    cursor: pointer;
+    background: var(--bg);
+    color: var(--ink);
+    transition: 0.15s;
+    font-variant-numeric: tabular-nums;
+    display: grid;
+    place-items: center;
+}
+.keypad button:hover {
+    background: var(--line);
+}
+.keypad button:active {
+    transform: translateY(1px);
+}
+.keypad .backspace {
+    background: var(--coral-soft);
+    color: var(--coral);
+}
+.keypad .backspace svg {
+    width: 26px;
+    height: 26px;
+    stroke-width: 2.2;
+}
+.keypad .confirm {
+    background: var(--go);
+    color: #fff;
+}
+.keypad .confirm svg {
+    width: 28px;
+    height: 28px;
+    stroke-width: 2.6;
+}
+
+/* 下部の操作ボタン */
+.actions {
+    display: flex;
+    gap: 10px;
+    flex: none;
+}
+.action-group {
+    display: none;
+    gap: 10px;
+    width: 100%;
+}
+.action-group.active {
+    display: flex;
+}
+.action-group > button {
+    flex: 1;
+}
+.actions button {
+    font-family: inherit;
+    font-size: clamp(18px, 2.4vh, 26px);
+    font-weight: 900;
+    padding: clamp(18px, 2.8vh, 32px) 16px;
+    border-radius: 20px;
+    border: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    transition:
+        transform 0.08s,
+        filter 0.2s;
+}
+.actions button svg {
+    width: 1.3em;
+    height: 1.3em;
+    flex: none;
+    stroke-width: 2.2;
+}
+.actions button:active {
+    transform: translateY(1px);
+}
+button:focus-visible {
+    outline: 3px solid var(--ink);
+    outline-offset: 3px;
+}
+.primary {
+    background: var(--go);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(62, 142, 117, 0.28);
+}
+.secondary {
+    background: var(--card);
+    color: var(--muted);
+    font-size: clamp(15px, 2vh, 19px);
+}
+.secondary:hover {
+    color: var(--ink);
+}
+.danger {
+    background: var(--coral);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(217, 105, 94, 0.28);
+}
+
+@media (max-width: 640px) {
+    body {
+        padding: 12px;
+    }
+    .screen {
+        padding: 18px 12px;
+    }
+    .step span {
+        font-size: 11px;
+    }
+    .action-group {
+        flex-direction: column-reverse;
+    }
+}
+
+/* 行き先ボタン（Station A / B / C）横並びで画面いっぱい */
+.destinations {
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+    width: 100%;
+    height: 55%;
+    margin-top: 40px;
+}
+.dest-button {
+    flex: 1; /* 幅を均等に分けて画面いっぱいに */
+    font-family: inherit;
+    /* font-size: clamp(24px, 5vh, 60px); */
+    font-size: clamp(30px, 6.5vh, 80px);
+    font-weight: 900;
+    border: 0;
+    border-radius: 20px;
+    cursor: pointer;
+    background: var(--go);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(62, 142, 117, 0.28);
+    transition:
+        transform 0.08s,
+        filter 0.2s;
+    /* 「Station」と「A」を2行にして大きく見せる */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.1;
+    padding: 12px;
+    letter-spacing: 1px;
+}
+.dest-button:hover {
+    filter: brightness(1.05);
+}
+.dest-button:active {
+    transform: translateY(1px);
+}
+
+/* 確認ポップアップ */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(43, 55, 66, 0.45);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 14px;
+    z-index: 100;
+}
+.modal-overlay.active {
+    display: flex;
+}
+.modal {
+    background: var(--card);
+    border-radius: var(--r);
+    padding: clamp(28px, 5vh, 48px);
+    width: 100%;
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(43, 55, 66, 0.25);
+}
+.modal-title {
+    font-size: clamp(20px, 3.4vh, 30px);
+    font-weight: 900;
+    color: var(--ink);
+}
+.modal-dest {
+    font-size: clamp(64px, 18vh, 160px);
+    font-weight: 900;
+    line-height: 1;
+    margin: clamp(16px, 3vh, 32px) 0;
+    color: var(--go);
+    letter-spacing: 1px;
+}
+.modal-actions {
+    display: flex;
+    gap: 16px;
+    margin-top: clamp(16px, 3vh, 32px);
+}
+.modal-actions button {
+    flex: 1;
+    font-family: inherit;
+    font-size: clamp(22px, 3.2vh, 32px);
+    font-weight: 900;
+    padding: clamp(24px, 4.5vh, 42px) 16px;
+    border: 0;
+    border-radius: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    transition:
+        transform 0.08s,
+        filter 0.2s;
+}
+.modal-actions button svg {
+    width: 1.1em;
+    height: 1.1em;
+    flex: none;
+    stroke-width: 2.2;
+}
+.modal-actions button:active {
+    transform: translateY(1px);
+}
+.modal-cancel {
+    background: var(--bg);
+    color: var(--muted);
+}
+.modal-ok {
+    background: var(--go);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(62, 142, 117, 0.28);
+}
